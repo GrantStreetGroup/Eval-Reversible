@@ -101,8 +101,7 @@ has failure_warning => (
 
 The undo stack, managed in LIFO order, as an arrayref of coderefs.
 
-This attribute is set up as a handled array, as implemented by L<MooX::HandlesVia>, so
-you should really interact with it through its handles:
+This attribute has the following handles, which is what you should really interact with:
 
 =head3 add_undo
 
@@ -145,7 +144,7 @@ Boolean that controls if L</run_reversibly> code blocks will actually run the un
 upon failure.  Turned on by default, but this can be enabled and disabled at will before
 or inside the code block.
 
-Also uses handles from L<MooX::HandlesVia>:
+Has the following handles:
 
 =head3 arm
 
@@ -157,17 +156,18 @@ Disarms the undo stack.
 
 =cut
 
+# XXX: MooX::HandlesVia can't really handle write operations on non-refs.  So, we're
+# faking the handles here.
+
 has armed => (
     is       => 'rw',
     isa      => Bool,
     required => 0,
     default  => 1,
-    handles_via => 'Bool',
-    handles  => {
-        arm    => 'set',
-        disarm => 'unset',
-    },
 );
+
+sub arm    { shift->armed(1) }
+sub disarm { shift->armed(0) }
 
 =head1 METHODS
 
