@@ -6,14 +6,16 @@ our $VERSION   = '0.90';
 use v5.10;
 use Moo;
 
-extends 'Exporter';
-
 use Types::Standard qw( Bool Str ArrayRef CodeRef );
 use MooX::HandlesVia;
 
 use Scalar::Util qw( blessed );
 
 use namespace::clean;  # don't export the above
+
+# Goes after namespace::clean, since we actually want to include this into our
+# namespace
+use Exporter 'import';
 
 BEGIN {
     our @EXPORT_OK = qw( to_undo reversibly );
