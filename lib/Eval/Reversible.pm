@@ -6,12 +6,20 @@ our $VERSION   = '0.90';
 use v5.10;
 use Moo;
 
+extends 'Exporter';
+
 use Types::Standard qw( Bool Str ArrayRef CodeRef );
 use MooX::HandlesVia;
 
 use Scalar::Util qw( blessed );
 
 use namespace::clean;  # don't export the above
+
+BEGIN {
+    our @EXPORT_OK = qw( to_undo reversibly );
+};
+
+our $Current_Reversible;
 
 =head1 NAME
 
@@ -62,6 +70,12 @@ Eval::Reversible - Evals with undo stacks
         $reversible->add_undo(...);
         ...
     });
+
+    # Alternative function interface
+    reversibly {
+        to_undo { ... };
+        die;
+    } 'Failed to run code; undoing...';
 
 =head1 DESCRIPTION
 
@@ -190,6 +204,7 @@ exception "SIGINT\n" is thrown.
 
 sub run_reversibly {
     my ($self, $code) = @_;
+    die "Cannot call run_reversibly without a code block!" unless $code;
 
     unless (blessed $self) {
         my $class = $self;
@@ -246,6 +261,50 @@ sub run_undo {
 }
 
 1;
+
+=head1 EXPORTABLE FUNCTIONS
+
+Eval::Reversible also supports an exportable function interface.  Though its usage is
+somewhat legacy, the functions are prototyped for reduced sigilla.
+
+None of the functions are exported by default.
+
+=head2 reversibly
+
+    reversibly {
+        ...
+    } 'Failure message';
+
+Creates a new localized Eval::Reversible object and calls L</run_reversibly> on it.  An
+optional failure message can be added to the end of coderef.
+
+=cut
+
+sub reversibly (&;$) {
+    my ($code, $fail_msg) = @_;
+    die "Cannot call reversibly without a code block!" unless $code;
+
+    local $Current_Reversible = __PACKAGE__->new;
+    $Current_Reversible->failure_warning($fail_msg) if defined $fail_msg;
+    $Current_Reversible->run_reversibly($code);
+}
+
+=head2 to_undo
+
+    # Only inside of a reversibly block
+    to_undo { rollback_everything };
+
+Adds to the existing undo stack.  Dies if called outside of a L</reversibly> block.
+
+=cut
+
+sub to_undo (&) {
+    my ($code) = @_;
+    die "Cannot call to_undo without a code block!"           unless $code;
+    die "Cannot call to_undo outside of an reversibly block!" unless $Current_Reversible;
+
+    $Current_Reversible->add_undo($code);
+}
 
 =head1 SEE ALSO
 
