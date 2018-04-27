@@ -314,8 +314,18 @@ L<Scope::Guard>, L<Data::Transactional>, L<Object::Transaction>.
 
 =head1 AUTHOR
 
-Grant Street Group, C<< <developers@grantstreet.com> >>
+Grant Street Group <developers@grantstreet.com>
 
-=head1 COPYRIGHT & LICENSE
+=head1 LICENSE AND COPYRIGHT
 
-Copyright 2018 Grant Street Group, All Rights Reserved.
+Copyright 2018 Grant Street Group
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the the Artistic License (2.0). You may obtain a
+copy of the full license at:
+
+L<http://www.perlfoundation.org/artistic_license_2_0>
+
+=cut
+
+1;

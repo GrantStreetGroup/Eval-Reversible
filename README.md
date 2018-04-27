@@ -189,8 +189,14 @@ Adds to the existing undo stack.  Dies if called outside of a ["reversibly"](#re
 
 # AUTHOR
 
-Grant Street Group, `<developers@grantstreet.com>`
+Grant Street Group <developers@grantstreet.com>
 
-# COPYRIGHT & LICENSE
+# LICENSE AND COPYRIGHT
 
-Copyright 2018 Grant Street Group, All Rights Reserved.
+Copyright 2018 Grant Street Group
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the the Artistic License (2.0). You may obtain a
+copy of the full license at:
+
+[http://www.perlfoundation.org/artistic\_license\_2\_0](http://www.perlfoundation.org/artistic_license_2_0)
