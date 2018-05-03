@@ -103,7 +103,7 @@ up to the point of failure.
 =head2 failure_warning
 
 This is the message that will warn as soon as the operation failed.  After this, the undo
-stack is unwound, and the exception is printed.  Default is no message.
+stack is unwound, and the exception is rethrown.  Default is no message.
 
 =cut
 
