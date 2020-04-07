@@ -1,60 +1,62 @@
 # NAME
 
-Eval::Reversible - Evals with undo stacks
+Eval::Reversible
+
+# VERSION
+
+version v0.900.1
 
 # SYNOPSIS
 
-```perl
-use Eval::Reversible;
+    use Eval::Reversible;
 
-my $reversible = Eval::Reversible->new(
-    failure_warning => "Undoing actions..",
-);
+    my $reversible = Eval::Reversible->new(
+        failure_warning => "Undoing actions..",
+    );
 
-$reversible->run_reversibly(sub {
-    # Do something with a side effect
-    open my $fh, '>', '/tmp/file' or die;
+    $reversible->run_reversibly(sub {
+        # Do something with a side effect
+        open my $fh, '>', '/tmp/file' or die;
 
-    # Specify how that side effect can be undone
-    # (assuming '/tmp/file' did not exist before)
-    $reversible->add_undo(sub { close $fh; unlink '/tmp/file' });
+        # Specify how that side effect can be undone
+        # (assuming '/tmp/file' did not exist before)
+        $reversible->add_undo(sub { close $fh; unlink '/tmp/file' });
 
-    operation_that_might_die($fh);
-    operation_that_might_get_SIGINTed($fh);
+        operation_that_might_die($fh);
+        operation_that_might_get_SIGINTed($fh);
 
-    close $fh;
-    unlink '/tmp/file';
+        close $fh;
+        unlink '/tmp/file';
 
-    $reversible->clear_undo;
-    $reversible->failure_warning("Wasn't quite finished yet...");
+        $reversible->clear_undo;
+        $reversible->failure_warning("Wasn't quite finished yet...");
 
-    another_operation_that_might_die;
-    $reversible->add_undo(sub { foobar; });
+        another_operation_that_might_die;
+        $reversible->add_undo(sub { foobar; });
 
-    $reversible->disarm;
+        $reversible->disarm;
 
-    # This could die without an undo stack
-    another_operation_that_might_die;
+        # This could die without an undo stack
+        another_operation_that_might_die;
 
-    $reversible->arm;
+        $reversible->arm;
 
-    # Previous undo stack back in play
-});
+        # Previous undo stack back in play
+    });
 
-# Alternative caller
-Eval::Reversible->run_reversibly(sub {
-    my $reversible = $_[0];
+    # Alternative caller
+    Eval::Reversible->run_reversibly(sub {
+        my $reversible = $_[0];
 
-    $reversible->add_undo(...);
-    ...
-});
+        $reversible->add_undo(...);
+        ...
+    });
 
-# Alternative function interface
-reversibly {
-    to_undo { ... };
-    die;
-} 'Failed to run code; undoing...';
-```
+    # Alternative function interface
+    reversibly {
+        to_undo { ... };
+        die;
+    } 'Failed to run code; undoing...';
 
 # DESCRIPTION
 
@@ -62,13 +64,11 @@ Run code and automatically reverse their side effects if the code fails.  This i
 way of an undo stack.  By calling ["add\_undo"](#add_undo) right after a side effect, the effect is
 undone on the event that the ["run\_reversibly"](#run_reversibly) sub dies.  For example:
 
-```perl
-$reversible->run_reversibly(sub {
-    print "hello\n";
-    $reversible->add_undo(sub { print "goodbye\n" });
-    die "uh oh\n" if $something_bad;
-});
-```
+    $reversible->run_reversibly(sub {
+        print "hello\n";
+        $reversible->add_undo(sub { print "goodbye\n" });
+        die "uh oh\n" if $something_bad;
+    });
 
 This prints "hello" if `$something_bad` is false.  If it's true, then both "hello" and
 "goodbye" are printed and the exception "uh oh" is rethrown.
@@ -76,6 +76,10 @@ This prints "hello" if `$something_bad` is false.  If it's true, then both "hell
 Upon failure, any code refs provided by calling ["add\_undo"](#add_undo) are executed in reverse
 order.  Conceptually, we're unwinding the stack of side effects that `$code` performed
 up to the point of failure.
+
+# NAME
+
+Eval::Reversible - Evals with undo stacks
 
 # ATTRIBUTES
 
@@ -129,10 +133,8 @@ Disarms the undo stack.
 
 ## run\_reversibly
 
-```
-$reversible->run_reversibly($code);
-Eval::Reversible->run_reversibly($code);
-```
+    $reversible->run_reversibly($code);
+    Eval::Reversible->run_reversibly($code);
 
 Executes a code reference (`$code`) allowing operations with side effects to be
 automatically reversed if `$code` fails or is interrupted.  Automatically clears the
@@ -146,9 +148,7 @@ exception "SIGINT\\n" is thrown.
 
 ## run\_undo
 
-```
-$reversible->run_undo;
-```
+    $reversible->run_undo;
 
 Runs the undo stack thus far.  Always runs the bottom of the stack first (LIFO order).  A
 finished run will clear out the stack via pop.
@@ -165,27 +165,23 @@ None of the functions are exported by default.
 
 ## reversibly
 
-```
-reversibly {
-    ...
-} 'Failure message';
-```
+    reversibly {
+        ...
+    } 'Failure message';
 
 Creates a new localized Eval::Reversible object and calls ["run\_reversibly"](#run_reversibly) on it.  An
 optional failure message can be added to the end of coderef.
 
 ## to\_undo
 
-```
-# Only inside of a reversibly block
-to_undo { rollback_everything };
-```
+    # Only inside of a reversibly block
+    to_undo { rollback_everything };
 
 Adds to the existing undo stack.  Dies if called outside of a ["reversibly"](#reversibly) block.
 
 # SEE ALSO
 
-[Scope::Guard](https://metacpan.org/pod/Scope::Guard), [Data::Transactional](https://metacpan.org/pod/Data::Transactional), [Object::Transaction](https://metacpan.org/pod/Object::Transaction).
+[Scope::Guard](https://metacpan.org/pod/Scope%3A%3AGuard), [Data::Transactional](https://metacpan.org/pod/Data%3A%3ATransactional), [Object::Transaction](https://metacpan.org/pod/Object%3A%3ATransaction).
 
 # AUTHOR
 
@@ -200,3 +196,15 @@ under the terms of the the Artistic License (2.0). You may obtain a
 copy of the full license at:
 
 [http://www.perlfoundation.org/artistic\_license\_2\_0](http://www.perlfoundation.org/artistic_license_2_0)
+
+# AUTHOR
+
+Grant Street Group <developers@grantstreet.com>
+
+# COPYRIGHT AND LICENSE
+
+This software is Copyright (c) 2018 - 2020 by Grant Street Group.
+
+This is free software, licensed under:
+
+    The Artistic License 2.0 (GPL Compatible)
