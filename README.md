@@ -1,6 +1,6 @@
 # NAME
 
-Eval::Reversible
+Eval::Reversible - Evals with undo stacks
 
 # VERSION
 
@@ -76,10 +76,6 @@ This prints "hello" if `$something_bad` is false.  If it's true, then both "hell
 Upon failure, any code refs provided by calling ["add\_undo"](#add_undo) are executed in reverse
 order.  Conceptually, we're unwinding the stack of side effects that `$code` performed
 up to the point of failure.
-
-# NAME
-
-Eval::Reversible - Evals with undo stacks
 
 # ATTRIBUTES
 
@@ -182,20 +178,6 @@ Adds to the existing undo stack.  Dies if called outside of a ["reversibly"](#re
 # SEE ALSO
 
 [Scope::Guard](https://metacpan.org/pod/Scope%3A%3AGuard), [Data::Transactional](https://metacpan.org/pod/Data%3A%3ATransactional), [Object::Transaction](https://metacpan.org/pod/Object%3A%3ATransaction).
-
-# AUTHOR
-
-Grant Street Group <developers@grantstreet.com>
-
-# LICENSE AND COPYRIGHT
-
-Copyright 2018 Grant Street Group
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of the the Artistic License (2.0). You may obtain a
-copy of the full license at:
-
-[http://www.perlfoundation.org/artistic\_license\_2\_0](http://www.perlfoundation.org/artistic_license_2_0)
 
 # AUTHOR
 
