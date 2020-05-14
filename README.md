@@ -177,7 +177,7 @@ Adds to the existing undo stack.  Dies if called outside of a ["reversibly"](#re
 
 # SEE ALSO
 
-[Scope::Guard](https://metacpan.org/pod/Scope%3A%3AGuard), [Data::Transactional](https://metacpan.org/pod/Data%3A%3ATransactional), [Object::Transaction](https://metacpan.org/pod/Object%3A%3ATransaction).
+[Scope::Guard](https://metacpan.org/pod/Scope::Guard), [Data::Transactional](https://metacpan.org/pod/Data::Transactional), [Object::Transaction](https://metacpan.org/pod/Object::Transaction).
 
 # AUTHOR
 
